@@ -43,7 +43,7 @@ public class AccumulatorTests {
 
 	@Test
 	@Transactional
-	@Ignore
+//	@Ignore
 	public void test() {
 		accumulator.accumulate(new SharkQuote("fred", 6.0d));
 		accumulator.accumulate(new SharkQuote("fred", 6.2d));

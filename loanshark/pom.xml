@@ -1,56 +1,78 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>org.springframework.integration.samples</groupId>
+  <groupId>com.chahar.spring-integration</groupId>
   <artifactId>loanshark</artifactId>
-  <version>5.2.0.BUILD-SNAPSHOT</version>
+  <version>1.0.0-SNAPSHOT</version>
   <name>Loan Shark Sample</name>
-  <description>Loan Shark Sample</description>
-  <url>https://projects.spring.io/spring-integration</url>
-  <organization>
-    <name>SpringIO</name>
-    <url>https://spring.io</url>
-  </organization>
-  <licenses>
-    <license>
-      <name>The Apache Software License, Version 2.0</name>
-      <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
-      <distribution>repo</distribution>
-    </license>
-  </licenses>
-  <developers>
-    <developer>
-      <id>garyrussell</id>
-      <name>Gary Russell</name>
-      <email>grussell@pivotal.io</email>
-      <roles>
-        <role>project lead</role>
-      </roles>
-    </developer>
-    <developer>
-      <id>markfisher</id>
-      <name>Mark Fisher</name>
-      <email>mfisher@pivotal.io</email>
-      <roles>
-        <role>project founder and lead emeritus</role>
-      </roles>
-    </developer>
-    <developer>
-      <id>ghillert</id>
-      <name>Gunnar Hillert</name>
-      <email>ghillert@pivotal.io</email>
-    </developer>
-    <developer>
-      <id>abilan</id>
-      <name>Artem Bilan</name>
-      <email>abilan@pivotal.io</email>
-    </developer>
-  </developers>
-  <scm>
-    <connection>scm:git:scm:git:git://github.com/spring-projects/spring-integration-samples.git</connection>
-    <developerConnection>scm:git:scm:git:ssh://git@github.com:spring-projects/spring-integration-samples.git</developerConnection>
-    <url>https://github.com/spring-projects/spring-integration-samples</url>
-  </scm>
+  <packaging>war</packaging>
+
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <spring.integration.version>5.1.6.RELEASE</spring.integration.version>
+  </properties>
+
+
+  <profiles>
+    <profile>
+      <id>local</id>
+      <activation>
+        <activeByDefault>true</activeByDefault>
+      </activation>
+      <properties>
+        <environment.type>local</environment.type>
+        <quicker.site.context>/loanshark</quicker.site.context>
+        <quicker.site.port>8080</quicker.site.port>
+        <quicker.site.javaopts>-Xms512m -Xmx1024m -XX:MaxMetaspaceSize=1024m</quicker.site.javaopts>
+      </properties>
+    </profile>
+
+    <profile>
+      <id>qa</id>
+      <activation>
+        <activeByDefault>false</activeByDefault>
+      </activation>
+      <properties>
+        <environment.type>qa</environment.type>
+        <quicker.site.context>/loanshark_QA</quicker.site.context>
+        <quicker.site.port>8081</quicker.site.port>
+        <quicker.site.javaopts>-Xms256m -Xmx512m -XX:MaxMetaspaceSize=512m</quicker.site.javaopts>
+      </properties>
+    </profile>
+
+  </profiles>
+
+  <build>
+    <finalName>loanshark</finalName>
+
+    <plugins>
+      <plugin>
+        <groupId>org.apache.tomcat.maven</groupId>
+        <artifactId>tomcat7-maven-plugin</artifactId>
+        <version>2.2</version>
+        <configuration>
+          <path>${quicker.site.context}</path>
+          <port>${quicker.site.port}</port>
+          <systemProperties>
+            <JAVA_OPTS>${quicker.site.javaopts}</JAVA_OPTS>
+          </systemProperties>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.3</version>
+        <configuration>
+          <source>1.8</source>
+          <target>1.8</target>
+        </configuration>
+      </plugin>
+
+    </plugins>
+  </build>
+
   <dependencies>
     <dependency>
       <groupId>org.springframework.integration</groupId>
@@ -424,34 +446,24 @@
       </exclusions>
     </dependency>
   </dependencies>
-  <repositories>
-    <repository>
-      <id>repo.spring.io.milestone</id>
-      <name>Spring Framework Maven Milestone Repository</name>
-      <url>https://repo.spring.io/libs-milestone</url>
-    </repository>
-    <repository>
-      <id>repo.spring.io.snapshot</id>
-      <name>Spring Framework Maven Snapshot Repository</name>
-      <url>https://repo.spring.io/libs-snapshot</url>
-    </repository>
-  </repositories>
+
   <dependencyManagement>
     <dependencies>
       <dependency>
         <groupId>org.springframework</groupId>
         <artifactId>spring-framework-bom</artifactId>
-        <version>5.2.0.RC1</version>
+        <version>${spring.integration.version}</version>
         <scope>import</scope>
         <type>pom</type>
       </dependency>
       <dependency>
         <groupId>org.springframework.integration</groupId>
         <artifactId>spring-integration-bom</artifactId>
-        <version>5.2.0.M4</version>
+        <version>${spring.integration.version}</version>
         <scope>import</scope>
         <type>pom</type>
       </dependency>
     </dependencies>
   </dependencyManagement>
+
 </project>
